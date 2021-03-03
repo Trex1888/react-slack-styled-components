@@ -1,8 +1,35 @@
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { enterRoom } from "../features/appSlice";
+import db from "../firebase";
 
-function SidebarOption({ Icon, title }) {
+function SidebarOption({ Icon, title, addChannelOption, id }) {
+  const dispatch = useDispatch();
+
+  const addChannel = () => {
+    const channelName = prompt("Please enter the channel name");
+
+    if (channelName) {
+      db.collection("rooms").add({
+        name: channelName,
+      });
+    }
+  };
+
+  const selectChannel = () => {
+    if (id) {
+      dispatch(
+        enterRoom({
+          roomId: id,
+        })
+      );
+    }
+  };
+
   return (
-    <SidebarOptionContainer>
+    <SidebarOptionContainer
+      onClick={addChannelOption ? addChannel : selectChannel}
+    >
       {Icon && <Icon fontSize="small" style={{ padding: 10 }} />}
       {Icon ? (
         <h3>{title}</h3>
@@ -29,15 +56,6 @@ const SidebarOptionContainer = styled.div`
     background-color: #340e36;
   }
 
-  /* > .MuiSvgIcon-root {
-    padding: 10px;
-    font-size: 15px !important;
-  }
-
-  > .hash {
-    padding: 10px;
-  } */
-
   > h3 {
     font-weight: 500;
   }
@@ -47,6 +65,7 @@ const SidebarOptionContainer = styled.div`
   }
 `;
 
-const SidebarOptionChannel = styled.div`
+const SidebarOptionChannel = styled.h3`
   padding: 10px 0;
+  font-weight: 300;
 `;
