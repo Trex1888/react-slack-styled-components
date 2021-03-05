@@ -14,21 +14,22 @@ import {
   PeopleAlt,
 } from "@material-ui/icons";
 import SidebarOption from ".//SidebarOption";
-import db from "../firebase";
+import db, { auth } from "../firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { login } from "../features/userSlice";
-import { useSelector } from "react-redux";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Sidebar() {
+  const [user] = useAuthState(auth);
   const [channels, loading, error] = useCollection(db.collection("rooms"));
+
   return (
     <SidebarContainer>
       <SidebarHeader>
         <SidebarInfo>
-          <h2>Poster Nutbag</h2>
+          <h2>{user?.displayName}</h2>
           <h3>
             <FiberManualRecord />
-            Andy B
+            {user?.email}
           </h3>
         </SidebarInfo>
         <Create />
